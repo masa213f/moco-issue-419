@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moco-controller
+  namespace: moco-system
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: moco-controller
+        args:
+        - --check-interval=10s

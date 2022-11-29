@@ -1,0 +1,5 @@
+resources:
+- upstream.yaml
+
+patchesStrategicMerge:
+- patch.yaml

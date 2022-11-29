@@ -1,0 +1,27 @@
+apiVersion: moco.cybozu.com/v1beta2
+kind: MySQLCluster
+metadata:
+  name: target
+spec:
+  replicas: 3
+  podTemplate:
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: mysqld
+        image: quay.io/cybozu/mysql:8.0.28
+        resources:
+          requests:
+            cpu: 1
+          limits:
+            cpu: 2
+        livenessProbe:
+          failureThreshold: 1
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
