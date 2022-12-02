@@ -13,7 +13,7 @@ spec:
         app: client
     spec:
       containers:
-      - image: ghcr.io/masa213f/moco-issue-419:client
+      - image: ghcr.io/masa213f/moco-issue-419:case1-client
         imagePullPolicy: Always
         name: client
         args:
