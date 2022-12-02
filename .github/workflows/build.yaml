@@ -1,20 +1,20 @@
-name: Build
+name: Build case1 client image
 on:
   workflow_dispatch:
 jobs:
   image:
-    name: Push Container Image
+    name: Build and Push Container Image
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Login to ghcr.io
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
     - name: Build images
-      run: docker build -t client:dev .
+      run: docker build -t client:dev case1
     - name: Push images
       run: |
         SUFFIX=$(date "+%Y%m%d%H%M%S")
-        docker tag client:dev ghcr.io/masa213f/moco-issue-419:client-${SUFFIX}
-        docker push ghcr.io/masa213f/moco-issue-419:client-${SUFFIX}
-        docker tag client:dev ghcr.io/masa213f/moco-issue-419:client
-        docker push ghcr.io/masa213f/moco-issue-419:client
+        docker tag client:dev ghcr.io/masa213f/moco-issue-419:case1-client-${SUFFIX}
+        docker push ghcr.io/masa213f/moco-issue-419:case1-client-${SUFFIX}
+        docker tag client:dev ghcr.io/masa213f/moco-issue-419:case1-client
+        docker push ghcr.io/masa213f/moco-issue-419:case1-client
