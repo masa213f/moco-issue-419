@@ -15,8 +15,8 @@ spec:
             cpu: 1
           limits:
             cpu: 2
-        livenessProbe:
-          failureThreshold: 1
+        # livenessProbe:
+        #   failureThreshold: 1
   volumeClaimTemplates:
   - metadata:
       name: mysql-data

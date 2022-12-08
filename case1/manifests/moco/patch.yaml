@@ -9,5 +9,7 @@ spec:
     spec:
       containers:
       - name: moco-controller
+        image: ghcr.io/masa213f/moco-issue-419:controller
+        imagePullPolicy: Always
         args:
         - --check-interval=10s
