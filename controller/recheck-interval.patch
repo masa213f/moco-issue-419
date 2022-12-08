@@ -1,0 +1,25 @@
+diff --git a/clustering/status.go b/clustering/status.go
+index 6b2e5a5..0c5b1c5 100644
+--- a/clustering/status.go
++++ b/clustering/status.go
+@@ -19,8 +19,9 @@ import (
+ )
+ 
+ var (
+-	statusCheckRetryMax      = 3
+-	statusCheckRetryInterval = 3 * time.Second
++	statusCheckRetryMax          = 3
++	statusCheckRetryInterval     = 3 * time.Second
++	primaryStatusRecheckInterval = 1 * time.Millisecond
+ )
+ 
+ func init() {
+@@ -216,7 +217,7 @@ func (p *managerProcess) GatherStatus(ctx context.Context) (*StatusSet, error) {
+ 
+ 	// re-check the primary MySQL status to retrieve the latest executed GTID set
+ 	if ss.MySQLStatus[ss.Primary] != nil {
+-		time.Sleep(100 * time.Millisecond)
++		time.Sleep(primaryStatusRecheckInterval)
+ 		pst, err := ss.DBOps[ss.Primary].GetStatus(ctx)
+ 		if err != nil {
+ 			return nil, fmt.Errorf("failed to re-check the primary instance: %w", err)

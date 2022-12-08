@@ -1,0 +1,20 @@
+name: Build controller image
+on:
+  workflow_dispatch:
+jobs:
+  image:
+    name: Build and Push Container Image
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to ghcr.io
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+    - name: Build images
+      run: make -C controller build IMAGE_TAG=controller:dev
+    - name: Push images
+      run: |
+        SUFFIX=$(date "+%Y%m%d%H%M%S")
+        docker tag controller:dev ghcr.io/masa213f/moco-issue-419:controller-${SUFFIX}
+        docker push ghcr.io/masa213f/moco-issue-419:controller-${SUFFIX}
+        docker tag controller:dev ghcr.io/masa213f/moco-issue-419:controller
+        docker push ghcr.io/masa213f/moco-issue-419:controller
