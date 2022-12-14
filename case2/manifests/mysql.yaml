@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:8.0.28
+        name: mysql
+        args:
+        - --defaults-file=/etc/mysql/my.cnf
+        - --replicate-same-server-id
+        env:
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: yes
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /run
+          name: run
+        - mountPath: /var/log/mysql
+          name: var-log
+        - mountPath: /var/lib/mysql
+          name: data
+        - mountPath: /etc/mysql
+          name: mysql-conf
+        startupProbe:
+          exec:
+            command: ["mysql", "-u", "root", "-e", "SELECT VERSION()"]
+          failureThreshold: 60
+          periodSeconds: 3
+        readinessProbe:
+          exec:
+            command: ["bash", "-c", "[ ! -f /tmp/stop ]"]
+          failureThreshold: 1
+          periodSeconds: 3
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      - emptyDir: {}
+        name: run
+      - emptyDir: {}
+        name: var-log
+      - configMap:
+          defaultMode: 420
+          name: mycnf
+        name: mysql-conf
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

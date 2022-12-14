@@ -1,0 +1,8 @@
+resources:
+- client.yaml
+- mysql.yaml
+
+configMapGenerator:
+- name: mycnf
+  files:
+  - my.cnf
